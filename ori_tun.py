@@ -6,6 +6,7 @@ import math
 import numpy as np
 
 from psychopy import visual, event, core
+#import serial
 
 
 win = visual.Window(
@@ -17,19 +18,26 @@ win = visual.Window(
 frame_rate = 75 # s^-1
 frame_time = 1/frame_rate # seconds
 
+bar_width = 1
+
+bar_length = 5
+
 # How many sweeps through the center the bar makes (2 -> "there and back again")
 n_sweeps = 2
+
 # Center of bar sweep (center of screen is 0,0)
 x_center, y_center = 0, 0 # degs
+
 # total length of one sweep (through the center)
-sweep_length = 1 # degs
+sweep_length = 5 # degs
+
 # Degrees covered per second
-sweep_speed = 1 # degs / s
+sweep_speed = 4 # degs / s
 
 
 oris = np.arange(0, 180, 20)
 
-bar = visual.Rect(win, width = 0.1, height = 0.4, lineColor=None, fillColor=1 )
+bar = visual.Rect(win, width = bar_width, height = bar_length, lineColor=None, fillColor=1 )
 
 
 def psychopy_ori(ori):
@@ -128,12 +136,6 @@ def animate_sweeping_bar(x_center, y_center, ori, sweep_length, sweep_speed, n_s
 
     win : psychopy.visual.Window instance
     '''
-
-    # total length of one sweep (through the center)
-    sweep_length = 1 # degs
-
-    # Degrees covered per second
-    sweep_speed = 1 # degs / s
 
     sweep_time = sweep_length / sweep_speed # seconds
     # stim_time = (n_sweeps*sweep_length) / sweep_speed # seconds
