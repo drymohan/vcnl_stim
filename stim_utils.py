@@ -113,9 +113,12 @@ def animate_sweeping_bar(x_center, y_center, ori, sweep_length, sweep_speed, n_s
         2 -> there and back again
 
     bar : psychopy.visual.Rect instance
+        may be a list of bar instances that are to be animated together
 
     win : psychopy.visual.Window instance
     '''
+
+    multi_bar = True if isinstance(bar, list) else False
 
     sweep_time = sweep_length / sweep_speed # seconds
     # stim_time = (n_sweeps*sweep_length) / sweep_speed # seconds
@@ -143,7 +146,12 @@ def animate_sweeping_bar(x_center, y_center, ori, sweep_length, sweep_speed, n_s
 
     for f_idx in range(len(x_frame_pos)):
 
-        bar.pos = x_frame_pos[f_idx], y_frame_pos[f_idx]
-        bar.draw()
+        if multi_bar:
+            for b in bar:
+                b.pos = x_frame_pos[f_idx], y_frame_pos[f_idx]
+                b.draw()
+        else:
+            bar.pos = x_frame_pos[f_idx], y_frame_pos[f_idx]
+            bar.draw()
 
         win.flip()
