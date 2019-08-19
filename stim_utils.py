@@ -155,3 +155,21 @@ def animate_sweeping_bar(x_center, y_center, ori, sweep_length, sweep_speed, n_s
             bar.draw()
 
         win.flip()
+
+
+def drift_grating(temp_freq, stim_time, frame_time, grating, win):
+
+    n_frames = stim_time / frame_time
+
+    # As PsychoPy phase is module 0-1 (rather than 0-2pi),
+    # phase change per frame would be frame_time for temp_freq
+    # of 1 (ie 1 sec -> 1 cycle)
+    # Simply multiply by temp_freq to change phase chance for each
+    # frame
+    frame_phases = np.arange(n_frames) * frame_time * temp_freq
+
+    for fp in frame_phases:
+        grating.phase = fp
+        grating.draw()
+
+        win.flip()
