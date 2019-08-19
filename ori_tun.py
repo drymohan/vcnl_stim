@@ -10,7 +10,7 @@ from psychopy import visual, event, core
 
 win = visual.Window(
     size=[1280, 1024],
-    monitor='mbp',
+    monitor='vcnl',
     units = 'deg',
     fullscr=True, allowGUI=False, waitBlanking=True
     )
