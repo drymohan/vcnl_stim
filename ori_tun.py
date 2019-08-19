@@ -3,6 +3,8 @@
 from __future__ import division
 
 import math
+
+import serial
 import numpy as np
 
 from psychopy import visual, event, core
@@ -39,6 +41,14 @@ oris = np.arange(0, 180, 20)
 
 bar = visual.Rect(win, width = bar_width, height = bar_length, lineColor=None, fillColor=1 )
 
+ard = serial.Serial('/dev/ACM0')
+flag = serial.Serial('/dev/USB0')
+
+def setArd(n):
+    ard.write(chr(n))
+    
+def mark():
+    flag.write(1)
 
 def psychopy_ori(ori):
     '''
