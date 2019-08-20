@@ -1,5 +1,7 @@
 #!/usr/bin/env python2
 
+# This doesn't appear to affect division in another 
+# script that this module is imported to 
 from __future__ import division
 
 import math
@@ -88,7 +90,7 @@ def make_xy_frame_pos(ori = 0, x_center=0, y_center=0, tot_frame_offsets=None):
     return x_frame_pos, y_frame_pos
 
 
-def animate_sweeping_bar(x_center, y_center, ori, sweep_length, sweep_speed, n_sweeps, frame_time, bar, win):
+def animate_sweeping_bar(x_center, y_center, ori, sweep_length, sweep_speed, n_sweeps, frame_rate, bar, win):
 
     '''
     Animates the provided bar, on the provided win, according to sweep and centre arguments
@@ -117,6 +119,8 @@ def animate_sweeping_bar(x_center, y_center, ori, sweep_length, sweep_speed, n_s
 
     win : psychopy.visual.Window instance
     '''
+
+    frame_time = 1/float(frame_rate)
 
     multi_bar = True if isinstance(bar, list) else False
 
@@ -157,7 +161,11 @@ def animate_sweeping_bar(x_center, y_center, ori, sweep_length, sweep_speed, n_s
         win.flip()
 
 
-def drift_grating(temp_freq, stim_time, frame_time, grating, win):
+def drift_grating(temp_freq, stim_time, frame_rate, grating, win):
+
+    # python2 quirk ... integer division always results in integer
+    # Here, avoiding this with both float conversion and above import of division
+    frame_time = 1/float(frame_rate)
 
     n_frames = stim_time / frame_time
 
