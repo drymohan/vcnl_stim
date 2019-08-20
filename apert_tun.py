@@ -47,7 +47,7 @@ for l in ap_lengths:
     animate_sweeping_bar(
             x_center = x_center, y_center=y_center,
             sweep_length = sweep_length, sweep_speed=sweep_speed, 
-            n_sweeps = n_sweeps, frame_time = frame_time,
+            n_sweeps = n_sweeps, frame_rate = frame_rate,
             ori=ori, bar = [bar, apert], win = win
         )
 

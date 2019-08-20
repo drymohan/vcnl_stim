@@ -37,7 +37,7 @@ for sf in sfs:
 
     drift_grating(
         temp_freq = temp_freq, stim_time = stim_time,
-        frame_time = frame_time, grating = grating, win = win
+        frame_rate = frame_rate, grating = grating, win = win
         )
 
 win.close()
