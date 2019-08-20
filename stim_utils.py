@@ -11,6 +11,8 @@ import numpy as np
 
 from psychopy import visual, event, core
 
+def divTest(a,b):
+    return a/b
 
 try:
     ard = serial.Serial('/dev/ACM0')
