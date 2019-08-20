@@ -1,0 +1,149 @@
+#Programm fuer VSG in Verbindung mit Imager 2001
+
+01/05/01: Main loop optimised.
+
+10/12/99: Output to talk window.
+
+26/10/99: Header added to the output in Talk Window.
+
+10/1/07: Modified wait interval (Jai)
+
+Script to show 32 orientations moving bidirectionally, reversals at given freq.
+Designed to show ori stimuli both binocularly and monocularly using shutters.
+!! The shutter bits are relayed through the Series3/visage to supply high enough voltage
+to the Shutter Interface. Connections:
+  Imager out  Series3 in  Series3 out  Shutter Interface
+  RE (32)    25-pin connector  Out4 (64)    RE
+  LE (64)    25-pin connector  Out3 (128)  LE
+The input bits are resolved as follows:
+bits 0-4: orientation in 5.625 deg steps
+bits 5-6 (shutter bits): if 0 -> blank; otherwise grating stimulus
+NOTE: Stimulus numbers < 32 are blank!
+
+This script was called ORIOHNE8.STM originally & has been renamed to show that this is for direction mapping.
+
+DO 14 = IN1 Reiz-Trigger
+DO 8 = ADC1 Trigger zum NEXT-Orientierung auslesen  OBSOLETE, P.B.
+DO 9-13 = DIN 1-5 Reizorientierung fuer VSG
+DO15 = DIN 6 - left shutter bit high
+DO0  =  DIN 7 - right shutter bit high
+Orientierungen in 22.5 Grad Schritten von Horizontal (Bewegung nach oben)
+im Uhrzeigersinn fortschreitend#
+
+#---------------------------------------------------
+                     MAIN BODY
+---------------------------------------------------#
+# initial common setup commands#
+Program(Grating);
+
+# variablen definition #
+dim trigstop, lastbit, step
+dim stim_num, last_stim_num, shifted_stim_num
+dim shutter, velocity, leftoffsetangle, rightoffsetangle, offsetangle, do14, ori, revfreq, sign, waittime, dt
+
+StimulusType(1,Grating);
+Shape(1,whole);
+Position(1,0.00,0.00);
+TemporalWaveform(1,None);
+Colour(1, 0.000, 0.000, 0.000, 1.000, 1.000, 1.000, RGB);
+
+ViewingDistance(280 mm);
+SpatialWaveform(1, SQUARE);
+SpatialFrequency(1, 0.6);
+
+velocity = 1.5;  # drift velocity (Hz) #
+revfreq = 1 ; # frequency of direction reversals (Hz) #
+
+# offset angles (deg) #
+leftoffsetangle=0
+rightoffsetangle=0
+
+# anzahl der reizmuster insgesamt #
+step = 0;
+message();
+message("Step");message("  ");message("GO bit");message(" ");message("Shutter");message(" ");message("Dir");
+message();
+
+# zuletzt benutzte stimulus nummer #
+last_stim_num = -1;
+stim_num = 0;
+sign = 1;
+
+# default blank screen #
+Contrast(1, 0.00);
+show(1);
+waittime = 0.5/ revfreq;
+
+# repeat endlessly #
+repeat
+  sign = -1 * sign;  # toggle velo sign continuously to get pseudorandom on presentation #
+  # read stimulus #
+  stim_num=GetDigIn;
+
+  # check if digital input changed #
+  if stim_num <> last_stim_num  # yes, changed #
+    step = step + 1;
+
+    # save last digital input #
+    last_stim_num = stim_num;
+
+    # RESOLVE DIGITAL INPUT BYTE #
+
+    # GO bit #
+    do14 = stim_num & 1;
+    # get rid of the GO bit #
+    shifted_stim_num = (stim_num & 254) / 2;
+
+    # check shutter state, bit 5 = right shutter, bit 6 = left shutter #
+    shutter = shifted_stim_num & 96;
+    # drop bits 5-7  #
+    shifted_stim_num =shifted_stim_num & 31;
+
+    # set offsets and digital outputs#
+    setdigout(shutter * 2);
+    if ( shutter = 64 )  # left eye open #
+      offsetangle = leftoffsetangle;
+    elseif ( shutter = 32 )  # right eye open #
+      offsetangle = rightoffsetangle;
+    else  # both open or closed#
+      offsetangle = 0;
+    endif;
+
+    # calculate rotation #
+    ori = shifted_stim_num * 5.625 + offsetangle;
+
+    # display stim parameters on console #
+    message(step);message("  ");
+    message(do14);message("  ");
+    message(shutter);message("  ");
+    message(ori);message();
+
+    # set new stimulus #
+    if shutter <> 0  # stimulus not blank #
+      # rotate stimulus #
+           Rotation(1, ori);
+      Contrast(1, 100.0);
+
+      # SHOW STIM STATIC OR MOVING DEPENDING ON GO BIT #
+      if (do14 = 0)  # GO bit low (we are in the interstimulus interval) #
+        # static stimulus #
+        DriftVelocity(1, 0.00);
+        Show(1);
+      else    # GO bit high #
+        # start stimulus motion #
+        while ((getdigin & 1))  # as long as GObit high #
+          Driftvelocity(1, sign * velocity);
+
+          dt = drawtime;
+          # message(dt):message() #
+          Wait(waittime - dt * (dt<waittime));  # wait half a cycle of revfreq, less time for last Show #
+          Show(1);
+        sign = -1 * sign;
+        wend
+      endif
+    else  # stimulus blank #
+      Contrast(1, 0.0);
+      Show(1);
+    endif
+  endif  # stimulus changed #
+Endrepeat
