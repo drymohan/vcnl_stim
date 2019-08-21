@@ -11,6 +11,10 @@ void setup() {
   Serial.println("Arduino Connected");
 
   for(auto pin: outputPins) pinMode(pin, OUTPUT);
+
+//  For CED flag
+  pinMode(12, OUTPUT);
+  digitalWrite(12, HIGH);
 }
 
 void loop() {
@@ -31,10 +35,19 @@ void loop() {
   if (Serial.available() > 0) {
     in_data = Serial.read();
 
+//    Serial.println(in_data);
 
-    for(int i=0; i<8; i++) {
-//      Serial.println(bitRead(in_data, i));
-      digitalWrite(outputPins[i], bitRead(in_data, i));
+//  If 0, then send flag
+    if (in_data == 0) {
+      digitalWrite(12, LOW);
+      digitalWrite(12, HIGH);
+      }
+
+    else {
+      for(int i=0; i<8; i++) {
+//        Serial.println(bitRead(in_data, i));
+        digitalWrite(outputPins[i], bitRead(in_data, i));
+      }
     }
 
   }
