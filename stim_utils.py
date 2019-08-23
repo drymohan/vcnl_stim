@@ -7,6 +7,7 @@ from __future__ import division
 import math
 
 import serial
+ser=serial.Serial('/dev/ttyACM0')
 import numpy as np
 
 from psychopy import visual, event, core
@@ -25,6 +26,16 @@ def setArd(n):
     
 def mark():
     flag.write(1)
+
+def setMarker(m):
+    ser.write(chr(m))
+    
+
+def sendMarker(flag):
+    if flag:
+        ser.write(chr(0))
+    else:
+        pass
 
 
 def psychopy_ori(ori):
@@ -160,7 +171,10 @@ def animate_sweeping_bar(x_center, y_center, ori, sweep_length, sweep_speed, n_s
             bar.pos = x_frame_pos[f_idx], y_frame_pos[f_idx]
             bar.draw()
 
-        win.flip()
+        if f_idx==1:
+            win.callOnFlip(sendMarker, True)
+        else:
+            win.flip()
 
 
 def drift_grating(temp_freq, stim_time, frame_rate, grating, win):
