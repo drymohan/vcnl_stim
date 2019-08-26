@@ -166,6 +166,10 @@ def animate_sweeping_bar(x_center, y_center, ori, sweep_length, sweep_speed, n_s
        tot_frame_offsets = tot_frame_offsets
        ) 
 
+    # Initialise marker to be sent on first flip
+    # This saves the process from occuring within a frame
+    win.callOnFlip(sendMarker, True)
+
     for f_idx in range(len(x_frame_pos)):
 
         if multi_bar:
@@ -176,10 +180,13 @@ def animate_sweeping_bar(x_center, y_center, ori, sweep_length, sweep_speed, n_s
             bar.pos = x_frame_pos[f_idx], y_frame_pos[f_idx]
             bar.draw()
 
-        if f_idx==0:
-            win.callOnFlip(sendMarker, True)
-        else:
-            win.flip()
+        # If second index, then stop sending marker on flip
+        # This way, only one if statement is checked, 
+        # and returns true only for one frame
+        if f_idx == 1:
+            win.callOnFlip(sendMarker, False)
+
+        win.flip()
 
 
 def drift_grating(temp_freq, stim_time, frame_rate, grating, win):
