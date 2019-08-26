@@ -7,25 +7,30 @@ from __future__ import division
 import math
 
 import serial
-ser=serial.Serial('/dev/ttyACM0')
+#ser=serial.Serial('/dev/ttyACM0')
+
 import numpy as np
 
 from psychopy import visual, event, core
 
+import random
+random.seed(0)
 def divTest(a,b):
     return a/b
 
 try:
-    ard = serial.Serial('/dev/ACM0')
-    flag = serial.Serial('/dev/USB0')
+    ser = serial.Serial('/dev/ttyACM0')
+#    flag = serial.Serial('/dev/USB0')
 except:
     print('serial objects not available')
 
-def setArd(n):
-    ard.write(chr(n))
+
+
+#def setArd(n):
+#    ard.write(chr(n))
     
-def mark():
-    flag.write(1)
+#def mark():
+#    flag.write(1)
 
 def setMarker(m):
     ser.write(chr(m))
@@ -171,7 +176,7 @@ def animate_sweeping_bar(x_center, y_center, ori, sweep_length, sweep_speed, n_s
             bar.pos = x_frame_pos[f_idx], y_frame_pos[f_idx]
             bar.draw()
 
-        if f_idx==1:
+        if f_idx==0:
             win.callOnFlip(sendMarker, True)
         else:
             win.flip()

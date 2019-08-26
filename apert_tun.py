@@ -2,6 +2,7 @@
 
 from stim_utils import *
 import barparameters as par
+import random
 
 win = visual.Window(
     size=[1280, 1024],
@@ -41,14 +42,18 @@ bar = visual.Rect(win, width = bar_width, height = bar_length,
 	ori = psychopy_ori(ori), lineColor=None, fillColor=par.dl)
 apert = visual.Rect(win, width=bar_width, 
 	ori = psychopy_ori(ori), lineColor=None, fillColor=0)
+core.wait(4)
+
+ap_rand= range(np.size(ap_lengths))
+random.shuffle(ap_rand)
 
 for numTrials in range(par.numTrials):
-    for l in ap_lengths:
+    for ap_idx in ap_rand:
         if event.getKeys(keyList = ['q']):
             core.quit() 
 
-        apert.height = l
-        setMarker(markers[marker_count%2])
+        apert.height = ap_lengths[ap_idx]
+        setMarker(markers[ap_idx])
         
         marker_count+=1
         animate_sweeping_bar(

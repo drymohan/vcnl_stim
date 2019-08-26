@@ -3,11 +3,12 @@
 from stim_utils import *
 import barparameters as par
 import serial
+import random
 
 
 # define the marker values. Markers will start at 1.
 markers=np.arange(np.size(par.orientation))+1
-marker_count = 0
+#marker_count = 0
 
 win = visual.Window(
     size=[1280, 1024],
@@ -39,21 +40,25 @@ oris = par.orientation
 
 
 bar = visual.Rect(win, width = bar_width, height = bar_length, lineColor=None, fillColor=par.dl, contrast=par.contrast )
-print(bar.contrast)
+core.wait(4)
+
+ori_rand= range(np.size(oris))
+random.shuffle(ori_rand)
+
 for numTrials in range(par.numTrials):
-    for ori in oris:
+    for ori_idx in ori_rand:
         if event.getKeys(keyList = ['q']):
             core.quit() 
 
-        bar.ori = psychopy_ori(ori)
-        setMarker(markers[marker_count%2])
+        bar.ori = psychopy_ori(oris[ori_idx])
+        setMarker(markers[ori_idx])
         
-        marker_count+=1
+        #marker_count+=1
         animate_sweeping_bar(
                 x_center = x_center, y_center=y_center,
                 sweep_length = sweep_length, sweep_speed=sweep_speed, 
                 n_sweeps = n_sweeps, frame_rate = frame_rate,
-                ori=ori, bar = bar, win = win
+                ori=oris[ori_idx], bar = bar, win = win
             )
 
 win.close()
