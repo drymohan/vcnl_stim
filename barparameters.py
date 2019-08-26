@@ -2,19 +2,17 @@
 
 from __future__ import division
 import numpy as np
-import random
 
-# Set this once for each unit.
+
+# Set this at the beginning of each run.
 Unitnum=1
 Runnum=1
 Eye='right' #('right' for right eye; 'left' for left eye) 
 numTrials= 2
 
 #Stimulus parameters.
-random.seed(0) #seeding the random number generator
 
-
-length=10#np.arange(0, 15, 2**0.5) #Length of the bar.
+length=10 #np.arange(0, 15, 2**0.5) #Length of the bar.
 width=1 # Width of the bar.
 orientation=np.arange(0,180,20) # Orientation of the bar.
 speed=5 # Speed of the bar in degrees per second
@@ -32,7 +30,7 @@ steps=0.5
 displacement=np.arange(start_disp, end_disp, steps)
 
 
+#import ori_tun
 
-# randomises the parameter we are testing. Replace the parameter in the bracket to the one we are changing.
 
-#random.shuffle(orientation)
+
