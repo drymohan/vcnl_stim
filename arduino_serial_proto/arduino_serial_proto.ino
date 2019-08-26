@@ -1,7 +1,9 @@
 uint8_t in_data;
 const int outputPins[] = {2,3,4,5,6,7, 8, 9};
-uint8_t outputData[8] = {0};
+//uint8_t outputData[8] = {0};
 int i;
+// For extracting bits
+uint8_t one_bit;
 
 
 void setup() {
@@ -47,6 +49,8 @@ void loop() {
       for(int i=0; i<8; i++) {
 //        Serial.println(bitRead(in_data, i));
         digitalWrite(outputPins[i], bitRead(in_data, i));
+//        Experimental ... may be quicker way of extracting relevant bit
+//        digitalWrite(outputPins[i], (in_data>>i)&one_bit);
       }
     }
 
