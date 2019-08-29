@@ -94,10 +94,17 @@ for numTrials in range(numTrials):
 win.close()
 
 #writing parameters to a csv file
-params=[Unitnum, Runnum, Eye, numTrials, blanktime, length, width, speed, sweeplength, dl, contrast, oris, disp, aperture]
+params=["Unitnum", "Runnum", "Eye", "numTrials", "blanktime", "length", "width", "speed", "sweeplength", "dl", "contrast", "oris", "disp", "aperture"]
 filename='Unit%s_parameters.csv'%(Unitnum)
 with open(filename, 'a') as csvFile:
+    all_vars = globals()
+    params_dict = {
+        key : all_vars[key]
+        for key in params
+    }
+
     writer = csv.writer(csvFile)
-    writer.writerow(params)
-csvFile.close()
+    writer.writerows(params_dict.items())
+# Not necessary to close with a "with open() as f" structure, in fact this may raise an error
+# csvFile.close()
 
